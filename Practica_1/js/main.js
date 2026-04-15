@@ -37,6 +37,7 @@ var EstadoInicio = {
     fondoMenu: null,
 
     preload: function() {
+        juego.load.audio('musicaInicio', 'audio/RolaEStadoUno.mp3');
         juego.load.image('fondo_inicio', 'img/fondo1.jpg');
         juego.load.image('btn_empezar', 'img/empezar.png');
     },
@@ -46,6 +47,9 @@ var EstadoInicio = {
         juego.world.setBounds(0, 0, 1280, 880);
 
         this.fondoMenu = juego.add.tileSprite(0, 0, 1280, 880, 'fondo_inicio');
+        // 🎵 MÚSICA DEL MENÚ
+        music = juego.add.audio('musicaInicio');
+        music.play('', 0, 1, true);
 
         var titulo = juego.add.text(juego.width / 2, 250, "MI AVENTURA", {
             font: "bold 100px Arial",
@@ -56,6 +60,7 @@ var EstadoInicio = {
         titulo.anchor.set(0.5);
 
         var btnEmpezar = juego.add.button(juego.width / 2, 500, 'btn_empezar', function() {
+             if (music) { music.stop(); } // 👈 DETENER MÚSICA
             vidas = 3;
             puntos = 0;
             // Corregido: Primero elegimos si es 1 o 2 jugadores
@@ -87,7 +92,7 @@ create: function() {
     // 🔹 2. TÍTULO
     var txtTitle = juego.add.text(juego.width / 2, 120, "MODO DE JUEGO", {
         font: "bold 80px Arial",
-        fill: "#ffffff"
+        fill: "#bda5a5"
     });
     txtTitle.anchor.set(0.5);
 
@@ -151,6 +156,7 @@ create: function() {
 
 var EstadoSeleccion = {
     preload: function() {
+        juego.load.audio('musicaSeleccion', 'audio/RolaSeleccionarJugador.mp3');
         juego.load.spritesheet('monito', 'img/personaje (1).png', 109, 144);
         juego.load.spritesheet('monito2', 'img/personaje2.png', 109, 144);
         juego.load.image('fondo_seleccion', 'img/fondo1.jpg');
@@ -158,6 +164,10 @@ var EstadoSeleccion = {
     },
 
     create: function() {
+        // 🎵 MÚSICA DE SELECCIÓN
+    if (music) { music.stop(); } // Detiene la anterior
+    music = juego.add.audio('musicaSeleccion');
+    music.play('', 0, 1, true);
         var fondo = juego.add.tileSprite(0, 0, 1280, 880, 'fondo_seleccion');
         
         var txt = juego.add.text(juego.width / 2, 150, "ELIGE TU HÉROE", {
