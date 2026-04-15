@@ -76,87 +76,98 @@ var EstadoInicio = {
 
 var EstadoMenuModo = {
     preload: function() {
+        
+        juego.load.audio('musicaSeleccion', 'audio/RolaSeleccionarJugador.mp3');
         juego.load.image('boton_1p', 'img/btn_1jugador.png');
         juego.load.image('boton_2p', 'img/btn_2jugadores.png');
         juego.load.image('fondo_menu', 'img/fondo1.jpg');
     },
 
-create: function() {
-
-    // 🔹 1. FONDO AJUSTADO A PANTALLA
-    var fondo = juego.add.sprite(0, 0, 'fondo_menu');
-    fondo.width = juego.width;
-    fondo.height = juego.height;
-
-
-    // 🔹 2. TÍTULO
-    var txtTitle = juego.add.text(juego.width / 2, 120, "MODO DE JUEGO", {
-        font: "bold 80px Arial",
-        fill: "#bda5a5"
-    });
-    txtTitle.anchor.set(0.5);
-
-
-    // 🔹 3. BOTÓN 1 JUGADOR
-    var btn1 = juego.add.button(juego.width / 2, 0, 'boton_1p', function() {
-        modoDosJugadores = false;
-        juego.state.start('seleccion');
-    }, this);
-
-    btn1.anchor.set(0.5);
-
-    // Escala dinámica (ajusta tamaño automáticamente)
-    var anchoDeseado = 300;
-    var escala1 = anchoDeseado / btn1.width;
-    btn1.scale.setTo(escala1);
-
-
-    // 🔹 4. BOTÓN 2 JUGADORES
-    var btn2 = juego.add.button(juego.width / 2, 0, 'boton_2p', function() {
-        modoDosJugadores = true;
-        turnoJugador = 1;
-        juego.state.start('seleccion');
-    }, this);
-
-    btn2.anchor.set(0.5);
-
-    var escala2 = anchoDeseado / btn2.width;
-    btn2.scale.setTo(escala2);
-
-
-    // 🔹 5. POSICIÓN INTELIGENTE (NO SE ENCIMAN)
-    var centroY = juego.height / 2 + 50;
-
-    btn1.y = centroY - btn1.height;
-    btn2.y = centroY + btn2.height;
-
-
-    // 🔥 6. EFECTO HOVER (SE VE PRO)
-    btn1.inputEnabled = true;
-    btn2.inputEnabled = true;
-
-    btn1.events.onInputOver.add(function() {
-        btn1.scale.setTo(escala1 * 1.1);
-    });
-
-    btn1.events.onInputOut.add(function() {
+    create: function() {
+    
+        // 🔊 Activar audio (IMPORTANTE en navegadores)
+        if (juego.sound.context.state === 'suspended') {
+            juego.sound.context.resume();
+        }
+    
+        // 🔇 Detener música anterior
+        if (music) {
+            music.stop();
+        }
+    
+        // 🎵 Reproducir música del menú modo
+        music = juego.add.audio('musicaSeleccion');
+        music.loop = true;
+        music.volume = 1;
+        music.play();
+    
+        // 🔹 1. FONDO
+        var fondo = juego.add.sprite(0, 0, 'fondo_menu');
+        fondo.width = juego.width;
+        fondo.height = juego.height;
+    
+        // 🔹 2. TÍTULO
+        var txtTitle = juego.add.text(juego.width / 2, 120, "MODO DE JUEGO", {
+            font: "bold 80px Arial",
+            fill: "#bda5a5"
+        });
+        txtTitle.anchor.set(0.5);
+    
+        // 🔹 3. BOTÓN 1 JUGADOR
+        var btn1 = juego.add.button(juego.width / 2, 0, 'boton_1p', function() {
+            modoDosJugadores = false;
+            music.stop(); // 🔥 detener música antes de cambiar
+            juego.state.start('seleccion');
+        }, this);
+    
+        btn1.anchor.set(0.5);
+    
+        var anchoDeseado = 300;
+        var escala1 = anchoDeseado / btn1.width;
         btn1.scale.setTo(escala1);
-    });
-
-    btn2.events.onInputOver.add(function() {
-        btn2.scale.setTo(escala2 * 1.1);
-    });
-
-    btn2.events.onInputOut.add(function() {
+    
+        // 🔹 4. BOTÓN 2 JUGADORES
+        var btn2 = juego.add.button(juego.width / 2, 0, 'boton_2p', function() {
+            modoDosJugadores = true;
+            turnoJugador = 1;
+            music.stop(); // 🔥 detener música
+            juego.state.start('seleccion');
+        }, this);
+    
+        btn2.anchor.set(0.5);
+    
+        var escala2 = anchoDeseado / btn2.width;
         btn2.scale.setTo(escala2);
-    });
-
-}
+    
+        // 🔹 POSICIONES
+        var centroY = juego.height / 2 + 50;
+        btn1.y = centroY - btn1.height;
+        btn2.y = centroY + btn2.height;
+    
+        // 🔥 HOVER
+        btn1.inputEnabled = true;
+        btn2.inputEnabled = true;
+    
+        btn1.events.onInputOver.add(function() {
+            btn1.scale.setTo(escala1 * 1.1);
+        });
+    
+        btn1.events.onInputOut.add(function() {
+            btn1.scale.setTo(escala1);
+        });
+    
+        btn2.events.onInputOver.add(function() {
+            btn2.scale.setTo(escala2 * 1.1);
+        });
+    
+        btn2.events.onInputOut.add(function() {
+            btn2.scale.setTo(escala2);
+        });
+    }
 };
 
 var EstadoSeleccion = {
     preload: function() {
-        juego.load.audio('musicaSeleccion', 'audio/RolaSeleccionarJugador.mp3');
         juego.load.spritesheet('monito', 'img/personaje (1).png', 109, 144);
         juego.load.spritesheet('monito2', 'img/personaje2.png', 109, 144);
         juego.load.image('fondo_seleccion', 'img/fondo1.jpg');
@@ -164,19 +175,16 @@ var EstadoSeleccion = {
     },
 
     create: function() {
-        // 🎵 MÚSICA DE SELECCIÓN
-    if (music) { music.stop(); } // Detiene la anterior
-    music = juego.add.audio('musicaSeleccion');
-    music.play('', 0, 1, true);
+        // 🎨 Fondo
         var fondo = juego.add.tileSprite(0, 0, 1280, 880, 'fondo_seleccion');
-        
+
         var txt = juego.add.text(juego.width / 2, 150, "ELIGE TU HÉROE", {
             font: "bold 60px Arial", 
             fill: "#ffffff"
         });
         txt.anchor.set(0.5);
 
-        // Ajusta 'x' y 'y' a las coordenadas donde quieras los botones
+        // 👇 Botón personaje
         var btnP1 = juego.add.button(juego.width / 2 - 200, 450, 'monito', function() {
             if (modoDosJugadores && turnoJugador === 1) {
                 personajeP1 = 'monito'; 
@@ -186,12 +194,15 @@ var EstadoSeleccion = {
                 personajeP2 = 'monito'; 
                 personajeSeleccionado = personajeP1; 
                 turnoJugador = 1;       
+                music.stop(); // 🔥 IMPORTANTE: detener música antes de cambiar de estado
                 juego.state.start('edouno');
             } else {
                 personajeSeleccionado = 'monito';
+                music.stop(); // 🔥 IMPORTANTE
                 juego.state.start('edouno');
             }
         }, this);
+
         btnP1.anchor.set(0.5);
     }
 };
@@ -201,7 +212,7 @@ var PrimerEdo = {
 
     preload: function () {
         // --- 1. CARGA DE AUDIOS ---
-        juego.load.audio('roluki', 'audio/rola.mp3');
+        juego.load.audio('roluki', 'audio/RolaJuego.mp3');
         juego.load.audio('sonidoMoneda', 'audio/moneda.mp3'); 
         juego.load.audio('sonidoManzana', 'audio/mordiendo_manzana.mp3');
         juego.load.audio('sfxBoton', 'audio/boton.mp3');
