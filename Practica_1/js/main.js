@@ -360,7 +360,7 @@ var PrimerEdo = {
         };
 
         // Posición: x = mitad de pantalla, y = altura total menos un pequeño margen (30px)
-        var miNombre = juego.add.text(juego.width / 2, juego.height - 30, "Creado por: Rodrigo Rios Contreras ", estiloNombre);
+        var miNombre = juego.add.text(juego.width / 2, juego.height - 30, "Creado por: Rodrigo Rios y Juan Ocampo ", estiloNombre);
         
         // Esto centra el texto horizontalmente respecto a su coordenada X
         miNombre.anchor.set(0.5);
